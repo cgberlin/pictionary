@@ -23,6 +23,7 @@ var pictionary = function() {
     }).mouseup(function(){
         clearInterval(interval);
         drawing = false;
+        canvas.unbind('mousemove');
     });
     function mouseIsDown(drawing){
           if (drawing){
