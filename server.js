@@ -11,7 +11,7 @@ var io = socket_io(server);
 io.on('connection', function (socket) {
     console.log('connected a client');
     socket.on('draw', function(position){
-      
+
       socket.broadcast.emit('draw', position);
     });
 });
