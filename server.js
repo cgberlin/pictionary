@@ -11,10 +11,12 @@ var io = socket_io(server);
 io.on('connection', function (socket) {
     console.log('connected a client');
     socket.on('draw', function(position){
-
       socket.broadcast.emit('draw', position);
+    });
+    socket.on('guessBox', function(guessValue){
+      socket.broadcast.emit('incomingGuess', guessValue);
     });
 });
 
 server.listen(process.env.PORT || 8080);
-console.log('launching server on 8080 now!>>>>>>>>>>>')
+console.log('launching server on 8080 now!>>>>>>>>>>>');
