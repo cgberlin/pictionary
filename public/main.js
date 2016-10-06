@@ -10,9 +10,11 @@ var pictionary = function() {
               socket.emit('guessBox', guessValue);
               guessBox.val('');
             };
+
     var socket = io();
     var canvas, context;
     var drawing;
+    var isDrawer;
     var interval;
     var draw = function(position) {
         context.beginPath();
@@ -48,10 +50,15 @@ var pictionary = function() {
               });
             }
         }
-    socket.on('draw', draw)
+    socket.on('draw', draw);
     socket.on('incomingGuess', function(guessValue){
       $('#guesses').append('<p>'+guessValue+'</div>');
       console.log(guessValue);
+    });
+    socket.on('clientCount', function(clientCount){
+      if (clientCount == 1){
+        isDrawer = true;
+      }
     });
 };
 
