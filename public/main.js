@@ -2,20 +2,24 @@
 
 var pictionary = function() {
     var guessBox;
+    var socket = io();
+    var canvas, context;
+    var drawing;
+    var isDrawer;
+    var interval;
+    var randomWordFromServer;
     var onKeyDown = function(event) {
               if (event.keyCode != 13) { // Enter
                   return;
               }
               var guessValue = guessBox.val();
               socket.emit('guessBox', guessValue);
+              if (guessBox.val() == randomWordFromServer){
+                alert('winner');
+              }
               guessBox.val('');
-            };
 
-    var socket = io();
-    var canvas, context;
-    var drawing;
-    var isDrawer;
-    var interval;
+            };
     var draw = function(position) {
         context.beginPath();
         context.arc(position.x, position.y,
@@ -40,7 +44,7 @@ var pictionary = function() {
 
     });
     function mouseIsDown(drawing){
-          if (drawing){
+          if (drawing && isDrawer){
               canvas.on('mousemove', function(event) {
                   var offset = canvas.offset();
                   var position = {x: event.pageX - offset.left,
@@ -50,16 +54,22 @@ var pictionary = function() {
               });
             }
         }
+    socket.on('randomWordGen', function(randomWord){
+          randomWordFromServer = randomWord;
+        });
     socket.on('draw', draw);
     socket.on('incomingGuess', function(guessValue){
       $('#guesses').append('<p>'+guessValue+'</div>');
       console.log(guessValue);
     });
-    socket.on('clientCount', function(clientCount){
+    socket.on('count', function(clientCount){
       if (clientCount == 1){
         isDrawer = true;
+        $('#guess').hide();
+        $('#top-message').append('<div><h3>You are the drawer</h3></div><div>Your word is: ' + randomWordFromServer);
       }
     });
+
 };
 
 
